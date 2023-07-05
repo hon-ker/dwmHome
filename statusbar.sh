@@ -81,7 +81,7 @@ wifi() {
   wifi_text=$(nmcli | grep "$wifi_grep_keyword" | sed "s/$wifi_grep_keyword//" | awk '{print $2}' | paste -d " " -s)
 
   case "$(cat /sys/class/net/wl*/operstate 2>/dev/null)" in
-    up) printf "^c$black^ ^b$pink^ WIFI^c$white^ ^b$grey^ $wifi_text" ;;
+    up) printf "^c$black^ ^b$pink^ WIFI^c$white^ ^b$grey^ $wifi_text " ;;
     down) printf "^c$black^ ^b$pink^ 󰤭 ^d^%s" ;;
   esac
 }
@@ -96,8 +96,28 @@ net(){
   . ~/.dwm/script/net.sh
   printf "^c$theme^%s" $RX
 }
+# 状态栏宽度和高度
+status_bar_width=100
+status_bar_height=20
+
+# 创建隐藏缓冲区
+buffer=$(mktemp)
 
 while true; do
-  xsetroot -name "$(net) $(battery) $(brightness) $(vol) $(cpu) $(mem) $(wifi) $(clock)"
-  sleep 1
+    # 绘制状态栏内容到缓冲区
+    status_bar_content=$(net)$(battery)$(brightness)$(vol)$(cpu)$(mem)$(wifi)$(clock)
+    echo "$status_bar_content" > "$buffer"
+
+    # 设置状态栏内容
+    xsetroot -name "$(cat $buffer)"
+
+    # 刷新屏幕或等待下一次绘制
+    sleep 1
 done
+
+# 清理临时缓冲区
+rm "$buffer"
+#while true; do
+#  xsetroot -name "$(net) $(battery) $(brightness) $(vol) $(cpu) $(mem) $(wifi) $(clock)"
+#  sleep 1
+#done

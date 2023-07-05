@@ -10,7 +10,7 @@ _thisdir=$(cd $(dirname $0);pwd)
 
 $_thisdir/statusbar.sh &   # 开启状态栏定时更新
 # wallpaper
-feh --bg-fill --randomize  ~/.dwm/bg/outbreak.jpg
+feh --bg-fill --randomize  ~/.dwm/bg/*
 # when you typing that stop touchpad device
 syndaemon -i 0.5 -t -K -R -d
 
